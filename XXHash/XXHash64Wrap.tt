@@ -1,0 +1,51 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core.dll" #>
+<#@ Assembly Name="System.Xml.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Runtime.InteropServices" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ include file="GenerationConfig.ttinclude" #><# GenerateCopyrightHeader(); #>
+
+
+using System.Runtime.InteropServices;
+using System;
+
+namespace XXHash
+{
+    public static partial class XXHash64
+    {
+
+	<#
+    foreach (var src in supportedTypes)
+    {
+		
+#>
+		
+			public unsafe static ulong GetHashCode(this <#= src.Name #>[] input, int offset, int count, ulong seed = 0)
+			{
+				if(input == null || input.Length == 0 || count == 0)
+					return 0;
+				fixed (<#= src.Name #>* @in = &input[offset])
+				{
+					return GetHashCode((byte*)@in, count * sizeof(<#= src.Name #>),seed);
+				}
+			}
+
+			public unsafe static ulong GetHashCode(this <#= src.Name #>[] input, ulong seed = 0)
+			{
+				if(input == null || input.Length == 0)
+					return 0;
+				fixed (<#= src.Name #>* @in = &input[0])
+				{
+					return GetHashCode((byte*)@in, input.Length * sizeof(<#= src.Name #>),seed);
+				}
+			}
+		<#
+		
+    }
+#>
+
+    }
+}

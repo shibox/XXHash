@@ -22,8 +22,8 @@ namespace XXHashBenchmarks
             Stopwatch w = Stopwatch.StartNew();
             for (int i = 0; i < 10000000; i++)
             {
-                hash1 = XXHash64.Calculate(bytes);
-                //hash2 = XXHash64Old.Calculate(bytes);
+                //hash1 = XXHash64.Calculate(bytes);
+                hash2 = XXHash64Old.Calculate(bytes);
             }
 
             w.Stop();
