@@ -12,7 +12,7 @@ namespace XXHashBenchmarks
     {
         public static void Run()
         {
-            Random rd = new Random();
+            Random rd = new Random(Guid.NewGuid().GetHashCode());
             byte[] bytes = new byte[1024];
             for (int i = 0; i < bytes.Length; i++)
                 bytes[i] = (byte)rd.Next(0, byte.MaxValue);
@@ -22,8 +22,7 @@ namespace XXHashBenchmarks
             Stopwatch w = Stopwatch.StartNew();
             for (int i = 0; i < 10000000; i++)
             {
-                //hash1 = XXHash64.Calculate(bytes);
-                hash2 = XXHash64Old.Calculate(bytes);
+                hash1 = XXHash64.Hash(bytes);
             }
 
             w.Stop();

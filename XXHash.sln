@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XXHash", "XXHash\XXHash.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XXHashBenchmarks", "XXHashBenchmarks\XXHashBenchmarks.csproj", "{DCCBD747-E1BA-4284-B80F-2F80F8A17706}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XXHashTests", "XXHashTests\XXHashTests.csproj", "{90D06A7C-9019-4C2F-8EE7-034AFED95CF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DCCBD747-E1BA-4284-B80F-2F80F8A17706}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCCBD747-E1BA-4284-B80F-2F80F8A17706}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCCBD747-E1BA-4284-B80F-2F80F8A17706}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90D06A7C-9019-4C2F-8EE7-034AFED95CF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D06A7C-9019-4C2F-8EE7-034AFED95CF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D06A7C-9019-4C2F-8EE7-034AFED95CF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D06A7C-9019-4C2F-8EE7-034AFED95CF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

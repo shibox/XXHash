@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace XXHash
 {
-    public static class XXHash32
+    public static partial class XXHash32
     {
         private const uint PRIME32_1 = 2654435761U;
         private const uint PRIME32_2 = 2246822519U;
@@ -15,8 +15,55 @@ namespace XXHash
         private const uint PRIME32_4 = 668265263U;
         private const uint PRIME32_5 = 374761393U;
 
+        public unsafe static ulong Hash(string input, Encoding encoder, uint seed = 0)
+        {
+            var buf = encoder.GetBytes(input);
+            fixed (byte* buffer = buf)
+            {
+                return Hash(buffer, buf.Length, seed);
+            }
+        }
+
+        public unsafe static ulong Hash(string input, uint seed = 0)
+        {
+            fixed (char* buffer = input)
+            {
+                return Hash((byte*)buffer, input.Length * sizeof(char), seed);
+            }
+        }
+
+        public unsafe static ulong Hash(string input, int offset, int count, uint seed = 0)
+        {
+            fixed (char* @in = input)
+            {
+                char* pd = @in;
+                pd += offset;
+                return Hash((byte*)pd, count * sizeof(char), seed);
+            }
+        }
+
+        public unsafe static ulong Hash(this Char[] input, int offset, int count, uint seed = 0)
+        {
+            if (input == null || input.Length == 0 || count == 0)
+                return 0;
+            fixed (Char* @in = &input[offset])
+            {
+                return Hash((byte*)@in, count * sizeof(Char), seed);
+            }
+        }
+
+        public unsafe static ulong Hash(this Char[] input, uint seed = 0)
+        {
+            if (input == null || input.Length == 0)
+                return 0;
+            fixed (Char* @in = &input[0])
+            {
+                return Hash((byte*)@in, input.Length * sizeof(Char), seed);
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe uint CalculateInline(byte* buffer, int len, uint seed = 0)
+        public static unsafe uint Hash(byte* buffer, int len, uint seed = 0)
         {
             unchecked
             {
@@ -87,51 +134,6 @@ namespace XXHash
                 h32 ^= h32 >> 16;
 
                 return h32;
-            }
-        }
-
-        public static unsafe uint Calculate(byte* buffer, int len, uint seed = 0)
-        {
-            return CalculateInline(buffer, len, seed);
-        }
-
-        public unsafe static uint Calculate(string value, Encoding encoder, uint seed = 0)
-        {
-            var buf = encoder.GetBytes(value);
-
-            fixed (byte* buffer = buf)
-            {
-                return CalculateInline(buffer, buf.Length, seed);
-            }
-        }
-
-        public unsafe static uint CalculateRaw(string buf, uint seed = 0)
-        {
-            fixed (char* buffer = buf)
-            {
-                return CalculateInline((byte*)buffer, buf.Length * sizeof(char), seed);
-            }
-        }
-
-        public unsafe static uint Calculate(byte[] buf, int len = -1, uint seed = 0)
-        {
-            if (len == -1)
-                len = buf.Length;
-
-            fixed (byte* buffer = buf)
-            {
-                return CalculateInline(buffer, len, seed);
-            }
-        }
-
-        public unsafe static uint Calculate(int[] buf, int len = -1, uint seed = 0)
-        {
-            if (len == -1)
-                len = buf.Length;
-
-            fixed (int* buffer = buf)
-            {
-                return Calculate((byte*)buffer, len * sizeof(int), seed);
             }
         }
 
