@@ -23,23 +23,23 @@ namespace XXHash
 		
 #>
 		
-			public unsafe static ulong GetHashCode(this <#= src.Name #>[] input, int offset, int count, ulong seed = 0)
+			public unsafe static ulong Hash(this <#= src.Name #>[] input, int offset, int count, ulong seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
 				fixed (<#= src.Name #>* @in = &input[offset])
 				{
-					return GetHashCode((byte*)@in, count * sizeof(<#= src.Name #>),seed);
+					return Hash((byte*)@in, count * sizeof(<#= src.Name #>),seed);
 				}
 			}
 
-			public unsafe static ulong GetHashCode(this <#= src.Name #>[] input, ulong seed = 0)
+			public unsafe static ulong Hash(this <#= src.Name #>[] input, ulong seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
 				fixed (<#= src.Name #>* @in = &input[0])
 				{
-					return GetHashCode((byte*)@in, input.Length * sizeof(<#= src.Name #>),seed);
+					return Hash((byte*)@in, input.Length * sizeof(<#= src.Name #>),seed);
 				}
 			}
 		<#

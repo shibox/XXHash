@@ -15,54 +15,54 @@ namespace XXHash
         private const ulong PRIME64_4 = 9650029242287828579UL;
         private const ulong PRIME64_5 = 2870177450012600261UL;
 
-        public unsafe static ulong GetHashCode(string input, Encoding encoder, ulong seed = 0)
+        public unsafe static ulong Hash(string input, Encoding encoder, ulong seed = 0)
         {
             var buf = encoder.GetBytes(input);
             fixed (byte* buffer = buf)
             {
-                return GetHashCode(buffer, buf.Length, seed);
+                return Hash(buffer, buf.Length, seed);
             }
         }
 
-        public unsafe static ulong GetHashCode(string input, ulong seed = 0)
+        public unsafe static ulong Hash(string input, ulong seed = 0)
         {
             fixed (char* buffer = input)
             {
-                return GetHashCode((byte*)buffer, input.Length * sizeof(char), seed);
+                return Hash((byte*)buffer, input.Length * sizeof(char), seed);
             }
         }
 
-        public unsafe static ulong GetHashCode(string input, int offset, int count, ulong seed = 0)
+        public unsafe static ulong Hash(string input, int offset, int count, ulong seed = 0)
         {
             fixed (char* @in = input)
             {
                 char* pd = @in;
                 pd += offset;
-                return GetHashCode((byte*)pd, count * sizeof(char), seed);
+                return Hash((byte*)pd, count * sizeof(char), seed);
             }
         }
 
-        public unsafe static ulong GetHashCode(this Char[] input, int offset, int count, ulong seed = 0)
+        public unsafe static ulong Hash(this Char[] input, int offset, int count, ulong seed = 0)
         {
             if (input == null || input.Length == 0 || count == 0)
                 return 0;
             fixed (Char* @in = &input[offset])
             {
-                return GetHashCode((byte*)@in, count * sizeof(Char),seed);
+                return Hash((byte*)@in, count * sizeof(Char),seed);
             }
         }
 
-        public unsafe static ulong GetHashCode(this Char[] input, ulong seed = 0)
+        public unsafe static ulong Hash(this Char[] input, ulong seed = 0)
         {
             if (input == null || input.Length == 0)
                 return 0;
             fixed (Char* @in = &input[0])
             {
-                return GetHashCode((byte*)@in, input.Length * sizeof(Char),seed);
+                return Hash((byte*)@in, input.Length * sizeof(Char),seed);
             }
         }
 
-        public static unsafe ulong GetHashCode(byte* input, int count, ulong seed = 0)
+        public static unsafe ulong Hash(byte* input, int count, ulong seed = 0)
         {
             ulong h64;
 
