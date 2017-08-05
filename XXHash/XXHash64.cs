@@ -168,6 +168,763 @@ namespace XXHash
             return h64;
         }
 
+        public static unsafe void Hash(byte* input, int count, ref ulong r1, ref ulong r2, ulong s1 = 0,ulong s2=1)
+        {
+            ulong h1_64;
+            ulong h2_64;
+            byte* bEnd = input + count;
+
+            if (count >= 32)
+            {
+                byte* limit = bEnd - 32;
+
+                ulong v1_1 = s1 + PRIME64_1 + PRIME64_2;
+                ulong v2_1 = s1 + PRIME64_2;
+                ulong v3_1 = s1 + 0;
+                ulong v4_1 = s1 - PRIME64_1;
+
+                ulong v1_2 = s2 + PRIME64_1 + PRIME64_2;
+                ulong v2_2 = s2 + PRIME64_2;
+                ulong v3_2 = s2 + 0;
+                ulong v4_2 = s2 - PRIME64_1;
+
+                do
+                {
+                    v1_1 += *((ulong*)input) * PRIME64_2;
+                    v1_2 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+                    v2_1 += *((ulong*)input) * PRIME64_2;
+                    v2_2 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+                    v3_1 += *((ulong*)input) * PRIME64_2;
+                    v3_2 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+                    v4_1 += *((ulong*)input) * PRIME64_2;
+                    v4_2 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v1_1 = rol31(v1_1);
+                    v1_2 = rol31(v1_2);
+
+                    v2_1 = rol31(v2_1);
+                    v2_2 = rol31(v2_2);
+
+                    v3_1 = rol31(v3_1);
+                    v3_2 = rol31(v3_2);
+
+                    v4_1 = rol31(v4_1);
+                    v4_2 = rol31(v4_2);
+
+                    v1_1 *= PRIME64_1;
+                    v1_2 *= PRIME64_1;
+
+                    v2_1 *= PRIME64_1;
+                    v2_2 *= PRIME64_1;
+
+                    v3_1 *= PRIME64_1;
+                    v3_2 *= PRIME64_1;
+
+                    v4_1 *= PRIME64_1;
+                    v4_2 *= PRIME64_1;
+                }
+                while (input <= limit);
+
+                h1_64 = rol1(v1_1) + rol7(v2_1) + rol12(v3_1) + rol18(v4_1);
+                h2_64 = rol1(v1_2) + rol7(v2_2) + rol12(v3_2) + rol18(v4_2);
+
+                v1_1 *= PRIME64_2;
+                v1_2 *= PRIME64_2;
+
+                v1_1 = rol31(v1_1);
+                v1_2 = rol31(v1_2);
+
+                v1_1 *= PRIME64_1;
+                v1_2 *= PRIME64_1;
+
+                h1_64 ^= v1_1;
+                h2_64 ^= v1_2;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+
+                v2_1 *= PRIME64_2;
+                v2_2 *= PRIME64_2;
+
+                v2_1 = rol31(v2_1);
+                v2_2 = rol31(v2_2);
+
+                v2_1 *= PRIME64_1;
+                v2_2 *= PRIME64_1;
+
+                h1_64 ^= v2_1;
+                h2_64 ^= v2_2;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+
+                v3_1 *= PRIME64_2;
+                v3_2 *= PRIME64_2;
+
+                v3_1 = rol31(v3_1);
+                v3_2 = rol31(v3_2);
+
+                v3_1 *= PRIME64_1;
+                v3_2 *= PRIME64_1;
+
+                h1_64 ^= v3_1;
+                h2_64 ^= v3_2;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+
+                v4_1 *= PRIME64_2;
+                v4_2 *= PRIME64_2;
+
+                v4_1 = rol31(v4_1);
+                v4_2 = rol31(v4_2);
+
+                v4_1 *= PRIME64_1;
+                v4_2 *= PRIME64_1;
+
+                h1_64 ^= v4_1;
+                h2_64 ^= v4_2;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+            }
+            else
+            {
+                h1_64 = s1 + PRIME64_5;
+                h2_64 = s2 + PRIME64_5;
+            }
+
+            h1_64 += (ulong)count;
+            h2_64 += (ulong)count;
+
+
+            while (input + 8 <= bEnd)
+            {
+                ulong k1_1 = *((ulong*)input);
+                ulong k1_2 = *((ulong*)input);
+
+                k1_1 *= PRIME64_2;
+                k1_2 *= PRIME64_2;
+
+                k1_1 = rol31(k1_1);
+                k1_2 = rol31(k1_2);
+
+                k1_1 *= PRIME64_1;
+                k1_2 *= PRIME64_1;
+
+                h1_64 ^= k1_1;
+                h2_64 ^= k1_2;
+
+                h1_64 = rol27(h1_64) * PRIME64_1 + PRIME64_4;
+                h2_64 = rol27(h2_64) * PRIME64_1 + PRIME64_4;
+
+                input += 8;
+            }
+
+            if (input + 4 <= bEnd)
+            {
+                h1_64 ^= *(uint*)input * PRIME64_1;
+                h2_64 ^= *(uint*)input * PRIME64_1;
+
+                h1_64 = rol23(h1_64) * PRIME64_2 + PRIME64_3;
+                h2_64 = rol23(h2_64) * PRIME64_2 + PRIME64_3;
+
+                input += 4;
+            }
+
+            while (input < bEnd)
+            {
+                h1_64 ^= ((ulong)*input) * PRIME64_5;
+                h2_64 ^= ((ulong)*input) * PRIME64_5;
+
+                h1_64 = rol11(h1_64) * PRIME64_1;
+                h2_64 = rol11(h2_64) * PRIME64_1;
+
+                input++;
+            }
+
+            h1_64 ^= h1_64 >> 33;
+            h2_64 ^= h2_64 >> 33;
+
+            h1_64 *= PRIME64_2;
+            h2_64 *= PRIME64_2;
+
+            h1_64 ^= h1_64 >> 29;
+            h2_64 ^= h2_64 >> 29;
+
+            h1_64 *= PRIME64_3;
+            h2_64 *= PRIME64_3;
+
+            h1_64 ^= h1_64 >> 32;
+            h2_64 ^= h2_64 >> 32;
+
+            r1 = h1_64;
+            r2 = h2_64;
+        }
+
+        public static unsafe void Hash(byte* input, int count, ref ulong r1, ref ulong r2,ref ulong r3, ulong s1 = 0, ulong s2 = 1,ulong s3=2)
+        {
+            ulong h1_64;
+            ulong h2_64;
+            ulong h3_64;
+            byte* bEnd = input + count;
+
+            if (count >= 32)
+            {
+                byte* limit = bEnd - 32;
+
+                ulong v1_1 = s1 + PRIME64_1 + PRIME64_2;
+                ulong v2_1 = s1 + PRIME64_2;
+                ulong v3_1 = s1 + 0;
+                ulong v4_1 = s1 - PRIME64_1;
+
+                ulong v1_2 = s2 + PRIME64_1 + PRIME64_2;
+                ulong v2_2 = s2 + PRIME64_2;
+                ulong v3_2 = s2 + 0;
+                ulong v4_2 = s2 - PRIME64_1;
+
+                ulong v1_3 = s3 + PRIME64_1 + PRIME64_2;
+                ulong v2_3 = s3 + PRIME64_2;
+                ulong v3_3 = s3 + 0;
+                ulong v4_3 = s3 - PRIME64_1;
+
+                do
+                {
+                    v1_1 += *((ulong*)input) * PRIME64_2;
+                    v1_2 += *((ulong*)input) * PRIME64_2;
+                    v1_3 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v2_1 += *((ulong*)input) * PRIME64_2;
+                    v2_2 += *((ulong*)input) * PRIME64_2;
+                    v2_3 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v3_1 += *((ulong*)input) * PRIME64_2;
+                    v3_2 += *((ulong*)input) * PRIME64_2;
+                    v3_3 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v4_1 += *((ulong*)input) * PRIME64_2;
+                    v4_2 += *((ulong*)input) * PRIME64_2;
+                    v4_3 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v1_1 = rol31(v1_1);
+                    v1_2 = rol31(v1_2);
+                    v1_3 = rol31(v1_3);
+
+                    v2_1 = rol31(v2_1);
+                    v2_2 = rol31(v2_2);
+                    v2_3 = rol31(v2_3);
+
+                    v3_1 = rol31(v3_1);
+                    v3_2 = rol31(v3_2);
+                    v3_3 = rol31(v3_3);
+
+                    v4_1 = rol31(v4_1);
+                    v4_2 = rol31(v4_2);
+                    v4_3 = rol31(v4_3);
+
+                    v1_1 *= PRIME64_1;
+                    v1_2 *= PRIME64_1;
+                    v1_3 *= PRIME64_1;
+
+                    v2_1 *= PRIME64_1;
+                    v2_2 *= PRIME64_1;
+                    v2_3 *= PRIME64_1;
+
+                    v3_1 *= PRIME64_1;
+                    v3_2 *= PRIME64_1;
+                    v3_3 *= PRIME64_1;
+
+                    v4_1 *= PRIME64_1;
+                    v4_2 *= PRIME64_1;
+                    v4_3 *= PRIME64_1;
+                }
+                while (input <= limit);
+
+                h1_64 = rol1(v1_1) + rol7(v2_1) + rol12(v3_1) + rol18(v4_1);
+                h2_64 = rol1(v1_2) + rol7(v2_2) + rol12(v3_2) + rol18(v4_2);
+                h3_64 = rol1(v1_3) + rol7(v2_3) + rol12(v3_3) + rol18(v4_3);
+
+                v1_1 *= PRIME64_2;
+                v1_2 *= PRIME64_2;
+                v1_3 *= PRIME64_2;
+
+                v1_1 = rol31(v1_1);
+                v1_2 = rol31(v1_2);
+                v1_3 = rol31(v1_3);
+
+                v1_1 *= PRIME64_1;
+                v1_2 *= PRIME64_1;
+                v1_3 *= PRIME64_1;
+
+                h1_64 ^= v1_1;
+                h2_64 ^= v1_2;
+                h3_64 ^= v1_3;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+                h3_64 = h3_64 * PRIME64_1 + PRIME64_4;
+
+                v2_1 *= PRIME64_2;
+                v2_2 *= PRIME64_2;
+                v2_3 *= PRIME64_2;
+
+                v2_1 = rol31(v2_1);
+                v2_2 = rol31(v2_2);
+                v2_3 = rol31(v2_3);
+
+                v2_1 *= PRIME64_1;
+                v2_2 *= PRIME64_1;
+                v2_3 *= PRIME64_1;
+
+                h1_64 ^= v2_1;
+                h2_64 ^= v2_2;
+                h3_64 ^= v2_3;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+                h3_64 = h3_64 * PRIME64_1 + PRIME64_4;
+
+                v3_1 *= PRIME64_2;
+                v3_2 *= PRIME64_2;
+                v3_3 *= PRIME64_2;
+
+                v3_1 = rol31(v3_1);
+                v3_2 = rol31(v3_2);
+                v3_3 = rol31(v3_3);
+
+                v3_1 *= PRIME64_1;
+                v3_2 *= PRIME64_1;
+                v3_3 *= PRIME64_1;
+
+                h1_64 ^= v3_1;
+                h2_64 ^= v3_2;
+                h3_64 ^= v3_3;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+                h3_64 = h3_64 * PRIME64_1 + PRIME64_4;
+
+                v4_1 *= PRIME64_2;
+                v4_2 *= PRIME64_2;
+                v4_3 *= PRIME64_2;
+
+                v4_1 = rol31(v4_1);
+                v4_2 = rol31(v4_2);
+                v4_3 = rol31(v4_3);
+
+                v4_1 *= PRIME64_1;
+                v4_2 *= PRIME64_1;
+                v4_3 *= PRIME64_1;
+
+                h1_64 ^= v4_1;
+                h2_64 ^= v4_2;
+                h3_64 ^= v4_3;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+                h3_64 = h3_64 * PRIME64_1 + PRIME64_4;
+            }
+            else
+            {
+                h1_64 = s1 + PRIME64_5;
+                h2_64 = s2 + PRIME64_5;
+                h3_64 = s3 + PRIME64_5;
+            }
+
+            h1_64 += (ulong)count;
+            h2_64 += (ulong)count;
+            h3_64 += (ulong)count;
+
+            while (input + 8 <= bEnd)
+            {
+                ulong k1_1 = *((ulong*)input);
+                ulong k1_2 = *((ulong*)input);
+                ulong k1_3 = *((ulong*)input);
+
+                k1_1 *= PRIME64_2;
+                k1_2 *= PRIME64_2;
+                k1_3 *= PRIME64_2;
+
+                k1_1 = rol31(k1_1);
+                k1_2 = rol31(k1_2);
+                k1_3 = rol31(k1_3);
+
+                k1_1 *= PRIME64_1;
+                k1_2 *= PRIME64_1;
+                k1_3 *= PRIME64_1;
+
+                h1_64 ^= k1_1;
+                h2_64 ^= k1_2;
+                h3_64 ^= k1_3;
+
+                h1_64 = rol27(h1_64) * PRIME64_1 + PRIME64_4;
+                h2_64 = rol27(h2_64) * PRIME64_1 + PRIME64_4;
+                h3_64 = rol27(h3_64) * PRIME64_1 + PRIME64_4;
+
+                input += 8;
+            }
+
+            if (input + 4 <= bEnd)
+            {
+                h1_64 ^= *(uint*)input * PRIME64_1;
+                h2_64 ^= *(uint*)input * PRIME64_1;
+                h3_64 ^= *(uint*)input * PRIME64_1;
+
+                h1_64 = rol23(h1_64) * PRIME64_2 + PRIME64_3;
+                h2_64 = rol23(h2_64) * PRIME64_2 + PRIME64_3;
+                h3_64 = rol23(h3_64) * PRIME64_2 + PRIME64_3;
+
+                input += 4;
+            }
+
+            while (input < bEnd)
+            {
+                h1_64 ^= ((ulong)*input) * PRIME64_5;
+                h2_64 ^= ((ulong)*input) * PRIME64_5;
+                h3_64 ^= ((ulong)*input) * PRIME64_5;
+
+                h1_64 = rol11(h1_64) * PRIME64_1;
+                h2_64 = rol11(h2_64) * PRIME64_1;
+                h3_64 = rol11(h3_64) * PRIME64_1;
+
+                input++;
+            }
+
+            h1_64 ^= h1_64 >> 33;
+            h2_64 ^= h2_64 >> 33;
+            h3_64 ^= h3_64 >> 33;
+
+            h1_64 *= PRIME64_2;
+            h2_64 *= PRIME64_2;
+            h3_64 *= PRIME64_2;
+
+            h1_64 ^= h1_64 >> 29;
+            h2_64 ^= h2_64 >> 29;
+            h3_64 ^= h3_64 >> 29;
+
+            h1_64 *= PRIME64_3;
+            h2_64 *= PRIME64_3;
+            h3_64 *= PRIME64_3;
+
+            h1_64 ^= h1_64 >> 32;
+            h2_64 ^= h2_64 >> 32;
+            h3_64 ^= h3_64 >> 32;
+
+            r1 = h1_64;
+            r2 = h2_64;
+            r3 = h3_64;
+        }
+
+        public static unsafe void Hash(byte* input, int count, ref ulong r1, ref ulong r2, ref ulong r3,ref ulong r4, ulong s1 = 0, ulong s2 = 1, ulong s3 = 2,ulong s4=3)
+        {
+            ulong h1_64;
+            ulong h2_64;
+            ulong h3_64;
+            ulong h4_64;
+            byte* bEnd = input + count;
+
+            if (count >= 32)
+            {
+                byte* limit = bEnd - 32;
+
+                ulong v1_1 = s1 + PRIME64_1 + PRIME64_2;
+                ulong v2_1 = s1 + PRIME64_2;
+                ulong v3_1 = s1 + 0;
+                ulong v4_1 = s1 - PRIME64_1;
+
+                ulong v1_2 = s2 + PRIME64_1 + PRIME64_2;
+                ulong v2_2 = s2 + PRIME64_2;
+                ulong v3_2 = s2 + 0;
+                ulong v4_2 = s2 - PRIME64_1;
+
+                ulong v1_3 = s3 + PRIME64_1 + PRIME64_2;
+                ulong v2_3 = s3 + PRIME64_2;
+                ulong v3_3 = s3 + 0;
+                ulong v4_3 = s3 - PRIME64_1;
+
+                ulong v1_4 = s4 + PRIME64_1 + PRIME64_2;
+                ulong v2_4 = s4 + PRIME64_2;
+                ulong v3_4 = s4 + 0;
+                ulong v4_4 = s4 - PRIME64_1;
+
+                do
+                {
+                    v1_1 += *((ulong*)input) * PRIME64_2;
+                    v1_2 += *((ulong*)input) * PRIME64_2;
+                    v1_3 += *((ulong*)input) * PRIME64_2;
+                    v1_4 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v2_1 += *((ulong*)input) * PRIME64_2;
+                    v2_2 += *((ulong*)input) * PRIME64_2;
+                    v2_3 += *((ulong*)input) * PRIME64_2;
+                    v2_4 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v3_1 += *((ulong*)input) * PRIME64_2;
+                    v3_2 += *((ulong*)input) * PRIME64_2;
+                    v3_3 += *((ulong*)input) * PRIME64_2;
+                    v3_4 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v4_1 += *((ulong*)input) * PRIME64_2;
+                    v4_2 += *((ulong*)input) * PRIME64_2;
+                    v4_3 += *((ulong*)input) * PRIME64_2;
+                    v4_4 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v1_1 = rol31(v1_1);
+                    v1_2 = rol31(v1_2);
+                    v1_3 = rol31(v1_3);
+                    v1_4 = rol31(v1_4);
+
+                    v2_1 = rol31(v2_1);
+                    v2_2 = rol31(v2_2);
+                    v2_3 = rol31(v2_3);
+                    v2_4 = rol31(v2_4);
+
+                    v3_1 = rol31(v3_1);
+                    v3_2 = rol31(v3_2);
+                    v3_3 = rol31(v3_3);
+                    v3_4 = rol31(v3_4);
+
+                    v4_1 = rol31(v4_1);
+                    v4_2 = rol31(v4_2);
+                    v4_3 = rol31(v4_3);
+                    v4_4 = rol31(v4_4);
+
+                    v1_1 *= PRIME64_1;
+                    v1_2 *= PRIME64_1;
+                    v1_3 *= PRIME64_1;
+                    v1_4 *= PRIME64_1;
+
+                    v2_1 *= PRIME64_1;
+                    v2_2 *= PRIME64_1;
+                    v2_3 *= PRIME64_1;
+                    v2_4 *= PRIME64_1;
+
+                    v3_1 *= PRIME64_1;
+                    v3_2 *= PRIME64_1;
+                    v3_3 *= PRIME64_1;
+                    v3_4 *= PRIME64_1;
+
+                    v4_1 *= PRIME64_1;
+                    v4_2 *= PRIME64_1;
+                    v4_3 *= PRIME64_1;
+                    v4_4 *= PRIME64_1;
+                }
+                while (input <= limit);
+
+                h1_64 = rol1(v1_1) + rol7(v2_1) + rol12(v3_1) + rol18(v4_1);
+                h2_64 = rol1(v1_2) + rol7(v2_2) + rol12(v3_2) + rol18(v4_2);
+                h3_64 = rol1(v1_3) + rol7(v2_3) + rol12(v3_3) + rol18(v4_3);
+                h4_64 = rol1(v1_4) + rol7(v2_4) + rol12(v3_4) + rol18(v4_4);
+
+                v1_1 *= PRIME64_2;
+                v1_2 *= PRIME64_2;
+                v1_3 *= PRIME64_2;
+                v1_4 *= PRIME64_2;
+
+                v1_1 = rol31(v1_1);
+                v1_2 = rol31(v1_2);
+                v1_3 = rol31(v1_3);
+                v1_4 = rol31(v1_4);
+
+                v1_1 *= PRIME64_1;
+                v1_2 *= PRIME64_1;
+                v1_3 *= PRIME64_1;
+                v1_4 *= PRIME64_1;
+
+                h1_64 ^= v1_1;
+                h2_64 ^= v1_2;
+                h3_64 ^= v1_3;
+                h4_64 ^= v1_4;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+                h3_64 = h3_64 * PRIME64_1 + PRIME64_4;
+                h4_64 = h4_64 * PRIME64_1 + PRIME64_4;
+
+                v2_1 *= PRIME64_2;
+                v2_2 *= PRIME64_2;
+                v2_3 *= PRIME64_2;
+                v2_4 *= PRIME64_2;
+
+                v2_1 = rol31(v2_1);
+                v2_2 = rol31(v2_2);
+                v2_3 = rol31(v2_3);
+                v2_4 = rol31(v2_4);
+
+                v2_1 *= PRIME64_1;
+                v2_2 *= PRIME64_1;
+                v2_3 *= PRIME64_1;
+                v2_4 *= PRIME64_1;
+
+                h1_64 ^= v2_1;
+                h2_64 ^= v2_2;
+                h3_64 ^= v2_3;
+                h4_64 ^= v2_4;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+                h3_64 = h3_64 * PRIME64_1 + PRIME64_4;
+                h4_64 = h4_64 * PRIME64_1 + PRIME64_4;
+
+                v3_1 *= PRIME64_2;
+                v3_2 *= PRIME64_2;
+                v3_3 *= PRIME64_2;
+                v3_4 *= PRIME64_2;
+
+                v3_1 = rol31(v3_1);
+                v3_2 = rol31(v3_2);
+                v3_3 = rol31(v3_3);
+                v3_4 = rol31(v3_4);
+
+                v3_1 *= PRIME64_1;
+                v3_2 *= PRIME64_1;
+                v3_3 *= PRIME64_1;
+                v3_4 *= PRIME64_1;
+
+                h1_64 ^= v3_1;
+                h2_64 ^= v3_2;
+                h3_64 ^= v3_3;
+                h4_64 ^= v3_4;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+                h3_64 = h3_64 * PRIME64_1 + PRIME64_4;
+                h4_64 = h4_64 * PRIME64_1 + PRIME64_4;
+
+                v4_1 *= PRIME64_2;
+                v4_2 *= PRIME64_2;
+                v4_3 *= PRIME64_2;
+                v4_4 *= PRIME64_2;
+
+                v4_1 = rol31(v4_1);
+                v4_2 = rol31(v4_2);
+                v4_3 = rol31(v4_3);
+                v4_4 = rol31(v4_4);
+
+                v4_1 *= PRIME64_1;
+                v4_2 *= PRIME64_1;
+                v4_3 *= PRIME64_1;
+                v4_4 *= PRIME64_1;
+
+                h1_64 ^= v4_1;
+                h2_64 ^= v4_2;
+                h3_64 ^= v4_3;
+                h4_64 ^= v4_4;
+                h1_64 = h1_64 * PRIME64_1 + PRIME64_4;
+                h2_64 = h2_64 * PRIME64_1 + PRIME64_4;
+                h3_64 = h3_64 * PRIME64_1 + PRIME64_4;
+                h4_64 = h4_64 * PRIME64_1 + PRIME64_4;
+            }
+            else
+            {
+                h1_64 = s1 + PRIME64_5;
+                h2_64 = s2 + PRIME64_5;
+                h3_64 = s3 + PRIME64_5;
+                h4_64 = s4 + PRIME64_5;
+            }
+
+            h1_64 += (ulong)count;
+            h2_64 += (ulong)count;
+            h3_64 += (ulong)count;
+            h4_64 += (ulong)count;
+
+            while (input + 8 <= bEnd)
+            {
+                ulong k1_1 = *((ulong*)input);
+                ulong k1_2 = *((ulong*)input);
+                ulong k1_3 = *((ulong*)input);
+                ulong k1_4 = *((ulong*)input);
+
+                k1_1 *= PRIME64_2;
+                k1_2 *= PRIME64_2;
+                k1_3 *= PRIME64_2;
+                k1_4 *= PRIME64_2;
+
+                k1_1 = rol31(k1_1);
+                k1_2 = rol31(k1_2);
+                k1_3 = rol31(k1_3);
+                k1_4 = rol31(k1_4);
+
+                k1_1 *= PRIME64_1;
+                k1_2 *= PRIME64_1;
+                k1_3 *= PRIME64_1;
+                k1_4 *= PRIME64_1;
+
+                h1_64 ^= k1_1;
+                h2_64 ^= k1_2;
+                h3_64 ^= k1_3;
+                h4_64 ^= k1_4;
+
+                h1_64 = rol27(h1_64) * PRIME64_1 + PRIME64_4;
+                h2_64 = rol27(h2_64) * PRIME64_1 + PRIME64_4;
+                h3_64 = rol27(h3_64) * PRIME64_1 + PRIME64_4;
+                h4_64 = rol27(h4_64) * PRIME64_1 + PRIME64_4;
+
+                input += 8;
+            }
+
+            if (input + 4 <= bEnd)
+            {
+                h1_64 ^= *(uint*)input * PRIME64_1;
+                h2_64 ^= *(uint*)input * PRIME64_1;
+                h3_64 ^= *(uint*)input * PRIME64_1;
+                h4_64 ^= *(uint*)input * PRIME64_1;
+
+                h1_64 = rol23(h1_64) * PRIME64_2 + PRIME64_3;
+                h2_64 = rol23(h2_64) * PRIME64_2 + PRIME64_3;
+                h3_64 = rol23(h3_64) * PRIME64_2 + PRIME64_3;
+                h4_64 = rol23(h4_64) * PRIME64_2 + PRIME64_3;
+
+                input += 4;
+            }
+
+            while (input < bEnd)
+            {
+                h1_64 ^= ((ulong)*input) * PRIME64_5;
+                h2_64 ^= ((ulong)*input) * PRIME64_5;
+                h3_64 ^= ((ulong)*input) * PRIME64_5;
+                h4_64 ^= ((ulong)*input) * PRIME64_5;
+
+                h1_64 = rol11(h1_64) * PRIME64_1;
+                h2_64 = rol11(h2_64) * PRIME64_1;
+                h3_64 = rol11(h3_64) * PRIME64_1;
+                h4_64 = rol11(h4_64) * PRIME64_1;
+
+                input++;
+            }
+
+            h1_64 ^= h1_64 >> 33;
+            h2_64 ^= h2_64 >> 33;
+            h3_64 ^= h3_64 >> 33;
+            h4_64 ^= h4_64 >> 33;
+
+            h1_64 *= PRIME64_2;
+            h2_64 *= PRIME64_2;
+            h3_64 *= PRIME64_2;
+            h4_64 *= PRIME64_2;
+
+            h1_64 ^= h1_64 >> 29;
+            h2_64 ^= h2_64 >> 29;
+            h3_64 ^= h3_64 >> 29;
+            h4_64 ^= h4_64 >> 29;
+
+            h1_64 *= PRIME64_3;
+            h2_64 *= PRIME64_3;
+            h3_64 *= PRIME64_3;
+            h4_64 *= PRIME64_3;
+
+            h1_64 ^= h1_64 >> 32;
+            h2_64 ^= h2_64 >> 32;
+            h3_64 ^= h3_64 >> 32;
+            h4_64 ^= h4_64 >> 32;
+
+            r1 = h1_64;
+            r2 = h2_64;
+            r3 = h3_64;
+            r4 = h4_64;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong rol1(ulong x) { return (x << 1) | (x >> (64 - 1)); }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
