@@ -12,6 +12,12 @@ namespace XXHashBenchmarks
     {
         public unsafe static void Run()
         {
+            //HashRandomBytes();
+            HashStringTest();
+        }
+
+        public unsafe static void HashRandomBytes()
+        {
             Random rd = new Random(Guid.NewGuid().GetHashCode());
             byte[] bytes = new byte[1024];
             for (int i = 0; i < bytes.Length; i++)
@@ -45,6 +51,38 @@ namespace XXHashBenchmarks
             Console.WriteLine($"cost:{w.ElapsedMilliseconds}");
             Console.WriteLine(hash1 == hash2);
         }
+
+        public unsafe static void HashStringTest()
+        {
+            ulong hash1 = 0;
+            ulong hash2 = 0;
+            string s = "e000153353779d0d3d0ec78bd0321c7d";
+            Stopwatch w = Stopwatch.StartNew();
+            for (int i = 0; i < 10000000; i++)
+            {
+                //hash1 = XXHash64.Hash(s);
+                //hash2 = XXHash32.Hash(bytes);
+                hash1 = FNVHash(s);
+            }
+            w.Stop();
+            Console.WriteLine($"cost:{w.ElapsedMilliseconds}");
+
+        }
+
+        public static ulong FNVHash(String str)
+        {
+            ulong fnv_prime = 0x811C9DC5;
+            ulong hash = 0;
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                hash *= fnv_prime;
+                hash ^= str[i];
+            }
+
+            return hash;
+        }
+
 
     }
 }
