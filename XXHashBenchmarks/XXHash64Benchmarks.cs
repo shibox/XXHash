@@ -12,8 +12,8 @@ namespace XXHashBenchmarks
     {
         public unsafe static void Run()
         {
-            //HashRandomBytes();
-            HashStringTest();
+            HashRandomBytes();
+            //HashStringTest();
         }
 
         public unsafe static void HashRandomBytes()
