@@ -12,7 +12,8 @@ namespace XXHashBenchmarks
     {
         public unsafe static void Run()
         {
-            HashRandomBytes();
+            //HashRandomBytes();
+            HashRandomBytesFor();
             //HashStringTest();
         }
 
@@ -50,6 +51,55 @@ namespace XXHashBenchmarks
             w.Stop();
             Console.WriteLine($"cost:{w.ElapsedMilliseconds}");
             Console.WriteLine(hash1 == hash2);
+        }
+
+        public unsafe static void HashRandomBytesFor()
+        {
+            Random rd = new Random(Guid.NewGuid().GetHashCode());
+            ulong hash1 = 0;
+            for (int n = 1; n <= 32; n++)
+            {
+                byte[] bytes = new byte[n];
+                for (int i = 0; i < bytes.Length; i++)
+                    bytes[i] = (byte)rd.Next(0, byte.MaxValue);
+
+                Stopwatch w = Stopwatch.StartNew();
+                for (int i = 0; i < 100000000; i++)
+                {
+                    hash1 = FastHash.Hash(bytes);
+                }
+                w.Stop();
+                long costA = w.ElapsedMilliseconds;
+
+                w = Stopwatch.StartNew();
+                for (int i = 0; i < 100000000; i++)
+                {
+                    hash1 = XXHash64.Hash(bytes);
+                }
+                w.Stop();
+                long costB = w.ElapsedMilliseconds;
+                Console.WriteLine($"Length:{n.ToString().PadRight(3,' ')}    " +
+                    $"FastHash Cost:{costA.ToString().PadRight(5, ' ')}    " +
+                    $"XXHash64 Cost:{costB.ToString().PadRight(5, ' ')}    " +
+                    $"Times:{((float)costB/costA).ToString("f3").PadRight(5,' ')}");
+            }
+
+            //rd = new Random(Guid.NewGuid().GetHashCode());
+            //for (int n = 1; n <= 32; n++)
+            //{
+            //    byte[] bytes = new byte[n];
+            //    for (int i = 0; i < bytes.Length; i++)
+            //        bytes[i] = (byte)rd.Next(0, byte.MaxValue);
+
+            //    Stopwatch w = Stopwatch.StartNew();
+            //    for (int i = 0; i < 100000000; i++)
+            //    {
+            //        hash1 = XXHash64.Hash(bytes);
+            //    }
+
+            //    w.Stop();
+            //    Console.WriteLine($"length:{n} XXHash64 cost:{w.ElapsedMilliseconds}");
+            //}
         }
 
         public unsafe static void HashStringTest()
