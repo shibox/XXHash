@@ -168,7 +168,7 @@ namespace XXHash
             return h64;
         }
 
-        public static unsafe void Hash(byte* input, int count, ref ulong r1, ref ulong r2, ulong s1 = 0,ulong s2=1)
+        public static unsafe void Hash(byte* input, int count, out ulong r1, out ulong r2, ulong s1 = 0,ulong s2=1)
         {
             ulong h1_64;
             ulong h2_64;
@@ -362,7 +362,7 @@ namespace XXHash
             r2 = h2_64;
         }
 
-        public static unsafe void Hash(byte* input, int count, ref ulong r1, ref ulong r2,ref ulong r3, ulong s1 = 0, ulong s2 = 1,ulong s3=2)
+        public static unsafe void Hash(byte* input, int count, out ulong r1, out ulong r2, out ulong r3, ulong s1 = 0, ulong s2 = 1,ulong s3=2)
         {
             ulong h1_64;
             ulong h2_64;
@@ -615,7 +615,7 @@ namespace XXHash
             r3 = h3_64;
         }
 
-        public static unsafe void Hash(byte* input, int count, ref ulong r1, ref ulong r2, ref ulong r3,ref ulong r4, ulong s1 = 0, ulong s2 = 1, ulong s3 = 2,ulong s4=3)
+        public static unsafe void Hash(byte* input, int count, out ulong r1, out ulong r2, out ulong r3, out ulong r4, ulong s1 = 0, ulong s2 = 1, ulong s3 = 2,ulong s4=3)
         {
             ulong h1_64;
             ulong h2_64;
