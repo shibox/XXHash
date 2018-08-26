@@ -10,7 +10,7 @@ namespace XXHash
     {
 
 			
-			public unsafe static ulong Hash(this Byte[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this Byte[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -20,7 +20,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this Byte[] input, uint seed = 0)
+			public unsafe static uint Hash(this Byte[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -30,7 +30,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this SByte[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this SByte[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -40,7 +40,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this SByte[] input, uint seed = 0)
+			public unsafe static uint Hash(this SByte[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -50,7 +50,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this UInt16[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this UInt16[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -60,7 +60,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this UInt16[] input, uint seed = 0)
+			public unsafe static uint Hash(this UInt16[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -70,7 +70,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this Int16[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this Int16[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -80,7 +80,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this Int16[] input, uint seed = 0)
+			public unsafe static uint Hash(this Int16[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -90,7 +90,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this UInt32[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this UInt32[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -100,7 +100,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this UInt32[] input, uint seed = 0)
+			public unsafe static uint Hash(this UInt32[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -110,7 +110,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this Int32[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this Int32[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -120,7 +120,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this Int32[] input, uint seed = 0)
+			public unsafe static uint Hash(this Int32[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -130,7 +130,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this UInt64[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this UInt64[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -140,7 +140,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this UInt64[] input, uint seed = 0)
+			public unsafe static uint Hash(this UInt64[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -150,7 +150,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this Int64[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this Int64[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -160,7 +160,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this Int64[] input, uint seed = 0)
+			public unsafe static uint Hash(this Int64[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -170,7 +170,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this Single[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this Single[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -180,7 +180,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this Single[] input, uint seed = 0)
+			public unsafe static uint Hash(this Single[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
@@ -190,7 +190,7 @@ namespace XXHash
 				}
 			}
 				
-			public unsafe static ulong Hash(this Double[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this Double[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -200,7 +200,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this Double[] input, uint seed = 0)
+			public unsafe static uint Hash(this Double[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;
