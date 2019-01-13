@@ -42,7 +42,7 @@ namespace XXHashBenchmarks
             //}
 
             Stopwatch w = Stopwatch.StartNew();
-            for (int i = 0; i < 10000000; i++)
+            for (int i = 0; i < 1000000000; i++)
             {
                 hash1 = XXHash64.Hash(bytes);
                 //hash2 = XXHash32.Hash(bytes);
