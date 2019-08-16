@@ -23,7 +23,7 @@ namespace XXHash
 		
 #>
 		
-			public unsafe static ulong Hash(this <#= src.Name #>[] input, int offset, int count, uint seed = 0)
+			public unsafe static uint Hash(this <#= src.Name #>[] input, int offset, int count, uint seed = 0)
 			{
 				if(input == null || input.Length == 0 || count == 0)
 					return 0;
@@ -33,7 +33,7 @@ namespace XXHash
 				}
 			}
 
-			public unsafe static ulong Hash(this <#= src.Name #>[] input, uint seed = 0)
+			public unsafe static uint Hash(this <#= src.Name #>[] input, uint seed = 0)
 			{
 				if(input == null || input.Length == 0)
 					return 0;

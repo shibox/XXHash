@@ -15,7 +15,7 @@ namespace XXHash
         private const uint PRIME32_4 = 668265263U;
         private const uint PRIME32_5 = 374761393U;
 
-        public unsafe static ulong Hash(string input, Encoding encoder, uint seed = 0)
+        public unsafe static uint Hash(string input, Encoding encoder, uint seed = 0)
         {
             var buf = encoder.GetBytes(input);
             fixed (byte* buffer = buf)
@@ -24,7 +24,7 @@ namespace XXHash
             }
         }
 
-        public unsafe static ulong Hash(string input, uint seed = 0)
+        public unsafe static uint Hash(string input, uint seed = 0)
         {
             fixed (char* buffer = input)
             {
@@ -32,7 +32,7 @@ namespace XXHash
             }
         }
 
-        public unsafe static ulong Hash(string input, int offset, int count, uint seed = 0)
+        public unsafe static uint Hash(string input, int offset, int count, uint seed = 0)
         {
             fixed (char* @in = input)
             {
@@ -42,7 +42,7 @@ namespace XXHash
             }
         }
 
-        public unsafe static ulong Hash(this Char[] input, int offset, int count, uint seed = 0)
+        public unsafe static uint Hash(this Char[] input, int offset, int count, uint seed = 0)
         {
             if (input == null || input.Length == 0 || count == 0)
                 return 0;
@@ -52,7 +52,7 @@ namespace XXHash
             }
         }
 
-        public unsafe static ulong Hash(this Char[] input, uint seed = 0)
+        public unsafe static uint Hash(this Char[] input, uint seed = 0)
         {
             if (input == null || input.Length == 0)
                 return 0;
