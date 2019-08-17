@@ -57,7 +57,7 @@ namespace XXHashBenchmarks
         {
             Random rd = new Random(Guid.NewGuid().GetHashCode());
             ulong hash1 = 0;
-            for (int n = 1; n <= 32; n++)
+            for (int n = 1; n <= 4; n++)
             {
                 byte[] bytes = new byte[n];
                 for (int i = 0; i < bytes.Length; i++)
