@@ -168,6 +168,298 @@ namespace XXHash
             return h64;
         }
 
+        
+        public static unsafe ulong HashUnroll(byte* input, int count, ulong seed = 0)
+        {
+            if (count > 8)
+                return Hash(input, count, seed);
+            ulong h64 = 0;
+            switch (count)
+            {
+                case 0:
+                    return 0;
+                case 1:
+                    h64 = seed + PRIME64_5 + 1;
+
+                    h64 ^= ((ulong)*input) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    input++;
+
+                    h64 ^= h64 >> 33;
+                    h64 *= PRIME64_2;
+                    h64 ^= h64 >> 29;
+                    h64 *= PRIME64_3;
+                    h64 ^= h64 >> 32;
+                    break;
+                case 2:
+                    h64 = seed + PRIME64_5 + 2;
+
+                    h64 ^= ((ulong)*input) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    h64 ^= ((ulong)*(input + 1)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    input += 2;
+
+                    h64 ^= h64 >> 33;
+                    h64 *= PRIME64_2;
+                    h64 ^= h64 >> 29;
+                    h64 *= PRIME64_3;
+                    h64 ^= h64 >> 32;
+                    break;
+                case 3:
+                    h64 = seed + PRIME64_5 + 3;
+
+                    h64 ^= ((ulong)*input) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    h64 ^= ((ulong)*(input+1)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    h64 ^= ((ulong)*(input+2)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    input += 3;
+
+                    h64 ^= h64 >> 33;
+                    h64 *= PRIME64_2;
+                    h64 ^= h64 >> 29;
+                    h64 *= PRIME64_3;
+                    h64 ^= h64 >> 32;
+                    break;
+                case 4:
+                    h64 = seed + PRIME64_5 + 4;
+
+                    h64 ^= *(uint*)input * PRIME64_1;
+                    h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+                    input += 4;
+
+                    h64 ^= h64 >> 33;
+                    h64 *= PRIME64_2;
+                    h64 ^= h64 >> 29;
+                    h64 *= PRIME64_3;
+                    h64 ^= h64 >> 32;
+                    break;
+
+                case 5:
+                    h64 = seed + PRIME64_5 + 5;
+
+                    h64 ^= *(uint*)input * PRIME64_1;
+                    h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+
+                    h64 ^= ((ulong)*(input + 4)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+
+                    input += 5;
+
+                    h64 ^= h64 >> 33;
+                    h64 *= PRIME64_2;
+                    h64 ^= h64 >> 29;
+                    h64 *= PRIME64_3;
+                    h64 ^= h64 >> 32;
+                    break;
+
+                case 6:
+                    h64 = seed + PRIME64_5 + 6;
+
+                    h64 ^= *(uint*)input * PRIME64_1;
+                    h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+
+                    h64 ^= ((ulong)*(input + 4)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    h64 ^= ((ulong)*(input + 5)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+
+                    input += 6;
+
+                    h64 ^= h64 >> 33;
+                    h64 *= PRIME64_2;
+                    h64 ^= h64 >> 29;
+                    h64 *= PRIME64_3;
+                    h64 ^= h64 >> 32;
+                    break;
+
+                case 7:
+                    h64 = seed + PRIME64_5 + 4;
+
+                    h64 ^= *(uint*)input * PRIME64_1;
+                    h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+
+                    h64 ^= ((ulong)*(input + 4)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    h64 ^= ((ulong)*(input + 5)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+                    h64 ^= ((ulong)*(input + 6)) * PRIME64_5;
+                    h64 = rol11(h64) * PRIME64_1;
+
+                    input += 7;
+
+                    h64 ^= h64 >> 33;
+                    h64 *= PRIME64_2;
+                    h64 ^= h64 >> 29;
+                    h64 *= PRIME64_3;
+                    h64 ^= h64 >> 32;
+                    break;
+
+                case 8:
+                    h64 = seed + PRIME64_5 + 4;
+
+                    ulong k1 = *((ulong*)input);
+                    k1 *= PRIME64_2;
+                    k1 = rol31(k1);
+                    k1 *= PRIME64_1;
+                    h64 ^= k1;
+                    h64 = rol27(h64) * PRIME64_1 + PRIME64_4;
+                    input += 8;
+
+                    h64 ^= h64 >> 33;
+                    h64 *= PRIME64_2;
+                    h64 ^= h64 >> 29;
+                    h64 *= PRIME64_3;
+                    h64 ^= h64 >> 32;
+                    break;
+            }
+            return h64;
+        }
+
+        public static unsafe ulong Hash1(byte* input, ulong seed = 0)
+        {
+            ulong h64 = seed + PRIME64_5 + 1;
+
+            h64 ^= ((ulong)*input) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+            
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+            return h64;
+        }
+
+        public static unsafe ulong Hash2(byte* input, ulong seed = 0)
+        {
+            ulong h64 = seed + PRIME64_5 + 2;
+
+            h64 ^= ((ulong)*input) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+            h64 ^= ((ulong)*(input+1)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+            return h64;
+        }
+
+        public static unsafe ulong Hash3(byte* input, ulong seed = 0)
+        {
+            ulong h64 = seed + PRIME64_5 + 3;
+
+            h64 ^= ((ulong)*input) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+            h64 ^= ((ulong)*(input + 1)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+            h64 ^= ((ulong)*(input + 2)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+            return h64;
+        }
+
+        public static unsafe ulong Hash4(byte* input, ulong seed = 0)
+        {
+            ulong h64 = seed + PRIME64_5 + 4;
+
+            h64 ^= *(uint*)input * PRIME64_1;
+            h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+            return h64;
+        }
+
+        public static unsafe ulong Hash5(byte* input, ulong seed = 0)
+        {
+            ulong h64 = seed + PRIME64_5 + 5;
+
+            h64 ^= *(uint*)input * PRIME64_1;
+            h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+            h64 ^= ((ulong)*(input + 4)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+            return h64;
+        }
+
+        public static unsafe ulong Hash6(byte* input, ulong seed = 0)
+        {
+            ulong h64 = seed + PRIME64_5 + 6;
+
+            h64 ^= *(uint*)input * PRIME64_1;
+            h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+            h64 ^= ((ulong)*(input + 4)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+            h64 ^= ((ulong)*(input + 5)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+            return h64;
+        }
+
+        public static unsafe ulong Hash7(byte* input, ulong seed = 0)
+        {
+            ulong h64 = seed + PRIME64_5 + 7;
+
+            h64 ^= *(uint*)input * PRIME64_1;
+            h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+            h64 ^= ((ulong)*(input + 4)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+            h64 ^= ((ulong)*(input + 5)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+            h64 ^= ((ulong)*(input + 6)) * PRIME64_5;
+            h64 = rol11(h64) * PRIME64_1;
+
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+            return h64;
+        }
+
+        public static unsafe ulong Hash8(byte* input, ulong seed = 0)
+        {
+            ulong h64 = seed + PRIME64_5 + 8;
+
+            ulong k1 = *((ulong*)input);
+            k1 *= PRIME64_2;
+            k1 = rol31(k1);
+            k1 *= PRIME64_1;
+            h64 ^= k1;
+            h64 = rol27(h64) * PRIME64_1 + PRIME64_4;
+            
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+            return h64;
+        }
+
         public static unsafe void Hash(byte* input, int count, ref ulong r1, ref ulong r2, ulong s1 = 0,ulong s2=1)
         {
             ulong h1_64;

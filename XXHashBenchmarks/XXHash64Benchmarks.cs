@@ -57,24 +57,72 @@ namespace XXHashBenchmarks
         {
             Random rd = new Random(Guid.NewGuid().GetHashCode());
             ulong hash1 = 0;
-            for (int n = 1; n <= 4; n++)
+            for (int n = 1; n <= 8; n++)
             {
                 byte[] bytes = new byte[n];
                 for (int i = 0; i < bytes.Length; i++)
                     bytes[i] = (byte)rd.Next(0, byte.MaxValue);
 
+                long costA = 0;
                 Stopwatch w = Stopwatch.StartNew();
-                for (int i = 0; i < 100000000; i++)
+                fixed (byte* @in = &bytes[0])
                 {
-                    hash1 = FastHash.Hash(bytes);
-                }
-                w.Stop();
-                long costA = w.ElapsedMilliseconds;
+                    if (n == 1)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                        {
+                            //hash1 = FastHash.Hash(bytes);
+                            //hash1 = XXHash64.HashUnroll(@in,n,0);
+                            hash1 = XXHash64.Hash1(@in, 0);
+                        }
+                        costA = w.ElapsedMilliseconds;
+                    }
+                    if (n == 2)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                            hash1 = XXHash64.Hash2(@in, 0);
+                        costA = w.ElapsedMilliseconds;
+                    }
+                    if (n == 3)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                            hash1 = XXHash64.Hash3(@in, 0);
+                        costA = w.ElapsedMilliseconds;
+                    }
+                    if (n == 4)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                            hash1 = XXHash64.Hash4(@in, 0);
+                        costA = w.ElapsedMilliseconds;
+                    }
+                    if (n == 5)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                            hash1 = XXHash64.Hash5(@in, 0);
+                        costA = w.ElapsedMilliseconds;
+                    }
+                    if (n == 6)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                            hash1 = XXHash64.Hash6(@in, 0);
+                        costA = w.ElapsedMilliseconds;
+                    }
+                    if (n == 7)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                            hash1 = XXHash64.Hash7(@in, 0);
+                        costA = w.ElapsedMilliseconds;
+                    }
+                    if (n == 8)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                            hash1 = XXHash64.Hash8(@in, 0);
+                        costA = w.ElapsedMilliseconds;
+                    }
 
-                w = Stopwatch.StartNew();
-                for (int i = 0; i < 100000000; i++)
-                {
-                    hash1 = XXHash64.Hash(bytes);
+                    w = Stopwatch.StartNew();
+                    for (int i = 0; i < 100000000; i++)
+                        hash1 = XXHash64.Hash(@in, n, 0);
                 }
                 w.Stop();
                 long costB = w.ElapsedMilliseconds;
