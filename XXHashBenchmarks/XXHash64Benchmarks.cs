@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Engines;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,21 +10,54 @@ using XXHash;
 
 namespace XXHashBenchmarks
 {
+    [SimpleJob(RunStrategy.ColdStart, launchCount: 1, warmupCount: 1, targetCount: 1)]
+    [RankColumn]
+    public class XXHashBench
+    {
+        private readonly static byte[] bytes = new byte[1024 * 128];
+
+        [Params(5,100,1000,4096,1024*128)]
+        public int Size;
+
+        [Params(10_000)]
+        public int N;
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            var rd = new Random();
+            rd.NextBytes(bytes);
+        }
+
+        [Benchmark(Baseline = true)]
+        public unsafe void SystemImpl()
+        {
+            for (int i = 0; i < N; i++)
+            {
+                fixed (byte* p = bytes)
+                {
+                    var hash1 = XXHash64.Hash(bytes, 0, Size, 0);
+                }
+            }
+        }
+
+    }
+
+
     public class XXHash64Benchmarks
     {
         public unsafe static void Run()
         {
-            //HashRandomBytes();
-            HashRandomBytesFor();
+            HashRandomBytes();
+            //HashRandomBytesFor();
             //HashStringTest();
         }
 
         public unsafe static void HashRandomBytes()
         {
-            Random rd = new Random(Guid.NewGuid().GetHashCode());
-            byte[] bytes = new byte[1024];
-            for (int i = 0; i < bytes.Length; i++)
-                bytes[i] = (byte)rd.Next(0, byte.MaxValue);
+            var rd = new Random(Guid.NewGuid().GetHashCode());
+            var bytes = new byte[1024 * 4];
+            rd.NextBytes(bytes);
 
             ulong hash1 = 0;
             ulong hash2 = 0;
@@ -41,8 +76,9 @@ namespace XXHashBenchmarks
             //    }
             //}
 
-            Stopwatch w = Stopwatch.StartNew();
-            for (int i = 0; i < 1000000000; i++)
+            hash1 = XXHash64.Hash(bytes);
+            var w = Stopwatch.StartNew();
+            for (int i = 0; i < 10_000_000; i++)
             {
                 hash1 = XXHash64.Hash(bytes);
                 //hash2 = XXHash32.Hash(bytes);
@@ -55,7 +91,7 @@ namespace XXHashBenchmarks
 
         public unsafe static void HashRandomBytesFor()
         {
-            Random rd = new Random(Guid.NewGuid().GetHashCode());
+            var rd = new Random(Guid.NewGuid().GetHashCode());
             ulong hash1 = 0;
             for (int n = 1; n <= 8; n++)
             {
@@ -64,7 +100,7 @@ namespace XXHashBenchmarks
                     bytes[i] = (byte)rd.Next(0, byte.MaxValue);
 
                 long costA = 0;
-                Stopwatch w = Stopwatch.StartNew();
+                var w = Stopwatch.StartNew();
                 fixed (byte* @in = &bytes[0])
                 {
                     if (n == 1)

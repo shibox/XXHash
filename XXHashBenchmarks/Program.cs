@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BenchmarkDotNet.Running;
+using System;
 
 namespace XXHashBenchmarks
 {
@@ -6,8 +7,9 @@ namespace XXHashBenchmarks
     {
         static void Main(string[] args)
         {
-            XXHash64Benchmarks.Run();
-            Console.ReadLine();
+            var summary = BenchmarkRunner.Run<XXHashBench>();
+            //XXHash64Benchmarks.Run();
+            //Console.ReadLine();
         }
     }
 }
