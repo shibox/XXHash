@@ -42,7 +42,7 @@ namespace XXHash
             }
         }
 
-        public unsafe static ulong Hash(this Char[] input, int offset, int count, ulong seed = 0)
+        public unsafe static ulong Hash(this char[] input, int offset, int count, ulong seed = 0)
         {
             if (input == null || input.Length == 0 || count == 0)
                 return 0;
@@ -52,7 +52,7 @@ namespace XXHash
             }
         }
 
-        public unsafe static ulong Hash(this Char[] input, ulong seed = 0)
+        public unsafe static ulong Hash(this char[] input, ulong seed = 0)
         {
             if (input == null || input.Length == 0)
                 return 0;
@@ -62,12 +62,18 @@ namespace XXHash
             }
         }
 
+        public static unsafe ulong Hash(Span<byte> input, ulong seed = 0)
+        {
+            fixed (byte* ptr = input)
+            { 
+                return Hash(ptr, input.Length, seed);
+            }
+        }
+
         public static unsafe ulong Hash(byte* input, int count, ulong seed = 0)
         {
             ulong h64;
-
             byte* bEnd = input + count;
-
             if (count >= 32)
             {
                 byte* limit = bEnd - 32;
@@ -168,7 +174,112 @@ namespace XXHash
             return h64;
         }
 
-        
+        public static unsafe ulong Hash(byte* input, uint start,uint end, ulong seed = 0)
+        {
+            input += start;
+            uint count = end - start;
+            ulong h64;
+            byte* bEnd = input + count;
+            if (count >= 32)
+            {
+                byte* limit = bEnd - 32;
+
+                ulong v1 = seed + PRIME64_1 + PRIME64_2;
+                ulong v2 = seed + PRIME64_2;
+                ulong v3 = seed + 0;
+                ulong v4 = seed - PRIME64_1;
+
+                do
+                {
+                    v1 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+                    v2 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+                    v3 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+                    v4 += *((ulong*)input) * PRIME64_2;
+                    input += sizeof(ulong);
+
+                    v1 = rol31(v1);
+                    v2 = rol31(v2);
+                    v3 = rol31(v3);
+                    v4 = rol31(v4);
+
+                    v1 *= PRIME64_1;
+                    v2 *= PRIME64_1;
+                    v3 *= PRIME64_1;
+                    v4 *= PRIME64_1;
+                }
+                while (input <= limit);
+
+                h64 = rol1(v1) + rol7(v2) + rol12(v3) + rol18(v4);
+
+                v1 *= PRIME64_2;
+                v1 = rol31(v1);
+                v1 *= PRIME64_1;
+                h64 ^= v1;
+                h64 = h64 * PRIME64_1 + PRIME64_4;
+
+                v2 *= PRIME64_2;
+                v2 = rol31(v2);
+                v2 *= PRIME64_1;
+                h64 ^= v2;
+                h64 = h64 * PRIME64_1 + PRIME64_4;
+
+                v3 *= PRIME64_2;
+                v3 = rol31(v3);
+                v3 *= PRIME64_1;
+                h64 ^= v3;
+                h64 = h64 * PRIME64_1 + PRIME64_4;
+
+                v4 *= PRIME64_2;
+                v4 = rol31(v4);
+                v4 *= PRIME64_1;
+                h64 ^= v4;
+                h64 = h64 * PRIME64_1 + PRIME64_4;
+            }
+            else
+            {
+                h64 = seed + PRIME64_5;
+            }
+
+            h64 += (ulong)count;
+
+
+            while (input + 8 <= bEnd)
+            {
+                ulong k1 = *((ulong*)input);
+                k1 *= PRIME64_2;
+                k1 = rol31(k1);
+                k1 *= PRIME64_1;
+                h64 ^= k1;
+                h64 = rol27(h64) * PRIME64_1 + PRIME64_4;
+                input += 8;
+            }
+
+            if (input + 4 <= bEnd)
+            {
+                h64 ^= *(uint*)input * PRIME64_1;
+                h64 = rol23(h64) * PRIME64_2 + PRIME64_3;
+                input += 4;
+            }
+
+            while (input < bEnd)
+            {
+                h64 ^= ((ulong)*input) * PRIME64_5;
+                h64 = rol11(h64) * PRIME64_1;
+                input++;
+            }
+
+            h64 ^= h64 >> 33;
+            h64 *= PRIME64_2;
+            h64 ^= h64 >> 29;
+            h64 *= PRIME64_3;
+            h64 ^= h64 >> 32;
+
+            return h64;
+        }
+
         public static unsafe ulong HashUnroll(byte* input, int count, ulong seed = 0)
         {
             if (count > 8)
